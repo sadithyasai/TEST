@@ -1,0 +1,51 @@
+DECLARE
+l_responsibility_id 	NUMBER;
+l_application_id    	NUMBER;
+l_user_id           	NUMBER;
+l_request_id          NUMBER;
+BEGIN
+  --
+ /*
+ 
+ 
+ 
+  SELECT DISTINCT fr.responsibility_id,
+    frx.application_id
+     INTO l_responsibility_id,
+    l_application_id
+     FROM apps.fnd_responsibility frx,
+    apps.fnd_responsibility_tl fr
+    WHERE fr.responsibility_id = frx.responsibility_id
+  AND LOWER (fr.responsibility_name) LIKE LOWER('XXTest Resp');
+  --
+   SELECT user_id INTO l_user_id FROM fnd_user WHERE user_name = 'STHALLAM';
+  --
+  --To set environment context.*/
+  --
+  apps.fnd_global.apps_initialize (64384 ,20420,1 );
+  --
+  --Submitting Concurrent Request
+  --
+  l_request_id := fnd_request.submit_request ( 
+                            application   => 'XXIRIS', 
+                            program       => 'XXIRIS_ORDER_REPORT', 
+                            description   => 'order  report', 
+                            start_time    => sysdate, 
+                            sub_request   => FALSE,
+			      argument1     => :ACCOUNT_DETAILS.ACCOUNT_NUM,
+			    argument2  => :ACCOUNT_DETAILS.ORDR_STATUS);
+  
+  --
+  COMMIT;
+  --
+  
+  /*
+  IF l_request_id = 0
+  THEN
+     dbms_output.put_line ('Concurrent request failed to submit');
+  ELSE
+     dbms_output.put_line('Successfully Submitted the Concurrent Request');
+  END IF;
+   */
+  END;
+ 
